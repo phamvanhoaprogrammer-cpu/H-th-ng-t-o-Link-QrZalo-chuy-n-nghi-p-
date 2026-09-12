@@ -201,9 +201,22 @@
         let qrcodeObj = null;
 
         // ==========================================
-        // 1. TẮT VĨNH VIỄN ZOOM VÀ PINCH-TO-ZOOM
+        // 1. TẮT VĨNH VIỄN ZOOM, DOUBLE-TAP VÀ PINCH-TO-ZOOM TRIỆT ĐỂ
         // ==========================================
-        // Tắt double tap zoom
+        // Chặn Zoom 2 ngón tay (Pinch-to-zoom)
+        document.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchmove', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        // Chặn Double-Tap Zoom (Chạm 2 lần liên tiếp)
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function (event) {
             const now = (new Date()).getTime();
@@ -211,18 +224,22 @@
                 event.preventDefault();
             }
             lastTouchEnd = now;
-        }, false);
-
-        // Tắt pinch zoom (chụm 2 ngón tay)
-        document.addEventListener('touchmove', function (event) {
-            if (event.touches.length > 1) {
-                event.preventDefault();
-            }
         }, { passive: false });
 
-        // Tắt Zoom bằng phím tắt Ctrl + / Ctrl - / Ctrl Wheel trên PC
+        // Chặn Zoom Gesture trên Safari iOS
+        document.addEventListener('gesturestart', function (event) {
+            event.preventDefault();
+        });
+        document.addEventListener('gesturechange', function (event) {
+            event.preventDefault();
+        });
+        document.addEventListener('gestureend', function (event) {
+            event.preventDefault();
+        });
+
+        // Chặn Zoom bằng bàn phím & con cuộn chuột trên PC
         document.addEventListener('keydown', function (event) {
-            if (event.ctrlKey && (event.key === '+' || event.key === '-' || event.key === '=')) {
+            if (event.ctrlKey && (event.key === '+' || event.key === '-' || event.key === '=' || event.key === '0')) {
                 event.preventDefault();
             }
         });
@@ -240,7 +257,7 @@
             event.preventDefault();
         });
 
-        // Chặn các phím F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+Shift+C
+        // Chặn phím F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+Shift+C
         document.addEventListener('keydown', function (event) {
             if (
                 event.keyCode === 123 || // F12
