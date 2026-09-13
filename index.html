@@ -28,14 +28,12 @@
             -webkit-font-smoothing: antialiased;
             touch-action: manipulation;
             -webkit-text-size-adjust: 100%;
-            /* Tối ưu chống đơ lag và cho phép cuộn mượt mà trên di động */
             overflow-y: auto;
             min-height: 100vh;
             min-height: 100dvh;
             overscroll-behavior-y: none;
         }
 
-        /* Chống chụp màn hình / Mờ khi mất tiêu điểm */
         .anti-capture-layer {
             transition: filter 0.15s ease, opacity 0.15s ease;
             will-change: filter, opacity;
@@ -45,7 +43,6 @@
             opacity: 0 !important;
         }
 
-        /* Hiệu ứng Kính lỏng tương phản cao */
         .glass-light {
             background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(25px);
@@ -114,22 +111,50 @@
 
             <!-- Form Nhập Số Điện Thoại -->
             <div class="space-y-1.5">
-                <label for="phoneInput" id="labelPhone" class="block text-xs sm:text-sm font-extrabold text-slate-200 ml-1">
-                    Số điện thoại Zalo (Việt Nam)
-                </label>
+                <div class="flex items-center justify-between ml-1 mr-1">
+                    <label for="phoneInput" id="labelPhone" class="block text-xs sm:text-sm font-extrabold text-slate-200">
+                        Số điện thoại Zalo (Việt Nam)
+                    </label>
+                    <span id="charCounter" class="text-[11px] font-extrabold text-slate-400">0/10 số</span>
+                </div>
                 
-                <div id="inputWrapper" class="relative rounded-2xl flex items-center bg-slate-900 border border-slate-700 focus-within:border-blue-500 transition-all overflow-hidden shadow-inner">
-                    <div id="phonePrefix" class="pl-3.5 pr-3 py-3.5 flex items-center gap-1.5 text-slate-200 text-xs sm:text-sm font-extrabold border-r border-slate-700 bg-slate-800/80 shrink-0">
-                        <span>🇻🇳 +84</span>
+                <div class="flex gap-2 items-center">
+                    <div id="inputWrapper" class="relative rounded-2xl flex items-center flex-1 bg-slate-900 border border-slate-700 focus-within:border-blue-500 transition-all overflow-hidden shadow-inner">
+                        <div id="phonePrefix" class="pl-3.5 pr-3 py-3.5 flex items-center gap-1.5 text-slate-200 text-xs sm:text-sm font-extrabold border-r border-slate-700 bg-slate-800/80 shrink-0">
+                            <span>🇻🇳 +84</span>
+                        </div>
+
+                        <input 
+                            type="tel" 
+                            id="phoneInput"
+                            placeholder="Nhập 10 số..." 
+                            maxlength="10"
+                            oninput="handlePhoneInput(this)"
+                            class="block w-full px-3.5 py-3.5 bg-transparent text-white text-base sm:text-lg font-black tracking-widest focus:outline-none placeholder:text-slate-500 placeholder:text-xs placeholder:font-normal placeholder:tracking-normal"
+                        />
+
+                        <!-- Nút Xóa Nhanh (Dấu X đỏ) -->
+                        <button 
+                            type="button"
+                            id="clearInputBtn"
+                            onclick="clearPhoneInput()"
+                            class="hidden mr-2.5 w-6 h-6 rounded-full bg-rose-500/20 hover:bg-rose-500/30 text-rose-500 flex items-center justify-center transition-all cursor-pointer shrink-0"
+                            title="Xóa nội dung"
+                        >
+                            <i data-lucide="x" class="w-3.5 h-3.5 stroke-[3]"></i>
+                        </button>
                     </div>
 
-                    <input 
-                        type="tel" 
-                        id="phoneInput"
-                        placeholder="Nhập số điện thoại..." 
-                        maxlength="13"
-                        class="block w-full px-3.5 py-3.5 bg-transparent text-white text-xs sm:text-sm font-extrabold focus:outline-none placeholder:text-slate-500"
-                    />
+                    <!-- Nút Sao Chép Cạnh Ô Nhập Liệu -->
+                    <button 
+                        type="button"
+                        id="inlineCopyBtn"
+                        onclick="copyInputPhone()"
+                        class="px-3.5 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-blue-400 font-extrabold rounded-2xl transition-all active:scale-95 flex items-center justify-center shrink-0 shadow-md cursor-pointer"
+                        title="Sao chép số điện thoại"
+                    >
+                        <i data-lucide="copy" class="w-4 h-4"></i>
+                    </button>
                 </div>
             </div>
 
@@ -166,7 +191,7 @@
                             class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 bg-slate-800 hover:bg-slate-700 text-blue-400 font-extrabold text-xs rounded-xl transition-all border border-slate-700 active:scale-95 cursor-pointer"
                         >
                             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                            <span id="copyBtnText">Sao chép</span>
+                            <span id="copyBtnText">Sao chép link</span>
                         </button>
                         
                         <a 
@@ -189,7 +214,7 @@
                         <span>Phần 2: Mã QR Zalo</span>
                     </div>
 
-                    <div id="qrcode" class="p-2.5 bg-white rounded-2xl shadow-inner border border-slate-300"></div>
+                    <div id="qrcode" class="p-2.5 bg-white rounded-2xl shadow-inner border border-slate-300 flex items-center justify-center overflow-hidden"></div>
                     <p id="qrDesc" class="text-[11px] font-extrabold text-slate-400">Mã QR bảo mật độc quyền</p>
 
                     <button 
@@ -232,7 +257,6 @@
 
     <script>
         lucide.createIcons();
-        let qrcodeObj = null;
 
         // ==========================================
         // 1. CHẶN VĨNH VIỄN MÁY TÍNH / PC / LAPTOP
@@ -250,7 +274,6 @@
 
         document.addEventListener('DOMContentLoaded', enforceMobileOnly);
         
-        // Dùng debounce tối ưu sự kiện resize tránh kẹt luồng render khi bàn phím ảo ẩn/hiện
         let resizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
@@ -322,9 +345,11 @@
             const container = document.getElementById('mainContainer');
             const themeToggleBtn = document.getElementById('themeToggleBtn');
             const labelPhone = document.getElementById('labelPhone');
+            const charCounter = document.getElementById('charCounter');
             const inputWrapper = document.getElementById('inputWrapper');
             const phonePrefix = document.getElementById('phonePrefix');
             const phoneInput = document.getElementById('phoneInput');
+            const inlineCopyBtn = document.getElementById('inlineCopyBtn');
             const box1 = document.getElementById('panelBox1');
             const titlePart1 = document.getElementById('titlePart1');
             const zaloUrl = document.getElementById('zaloUrl');
@@ -343,10 +368,12 @@
                 container.className = "w-full max-w-sm sm:max-w-md my-auto rounded-3xl overflow-hidden relative anti-capture-layer glass-light text-slate-900 bg-white";
                 themeToggleBtn.className = "absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-xl bg-slate-200 hover:bg-slate-300 border border-slate-300 text-slate-800 flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-md";
                 
-                labelPhone.className = "block text-xs sm:text-sm font-extrabold text-slate-900 ml-1";
-                inputWrapper.className = "relative rounded-2xl flex items-center bg-slate-100 border border-slate-300 focus-within:border-blue-600 transition-all overflow-hidden shadow-inner";
+                labelPhone.className = "block text-xs sm:text-sm font-extrabold text-slate-900";
+                charCounter.className = "text-[11px] font-extrabold text-slate-500";
+                inputWrapper.className = "relative rounded-2xl flex items-center flex-1 bg-slate-100 border border-slate-300 focus-within:border-blue-600 transition-all overflow-hidden shadow-inner";
                 phonePrefix.className = "pl-3.5 pr-3 py-3.5 flex items-center gap-1.5 text-slate-900 text-xs sm:text-sm font-extrabold border-r border-slate-300 bg-slate-200/80 shrink-0";
-                phoneInput.className = "block w-full px-3.5 py-3.5 bg-transparent text-slate-900 text-xs sm:text-sm font-extrabold focus:outline-none placeholder:text-slate-400";
+                phoneInput.className = "block w-full px-3.5 py-3.5 bg-transparent text-slate-900 text-base sm:text-lg font-black tracking-widest focus:outline-none placeholder:text-slate-400 placeholder:text-xs placeholder:font-normal placeholder:tracking-normal";
+                inlineCopyBtn.className = "px-3.5 py-3.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-blue-700 font-extrabold rounded-2xl transition-all active:scale-95 flex items-center justify-center shrink-0 shadow-md cursor-pointer";
 
                 if(box1) box1.className = "bg-slate-100 p-3.5 rounded-2xl space-y-2 border border-slate-300 shadow-md";
                 if(titlePart1) titlePart1.className = "flex items-center gap-2 text-blue-700 font-extrabold text-xs";
@@ -368,10 +395,12 @@
                 container.className = "w-full max-w-sm sm:max-w-md my-auto rounded-3xl overflow-hidden relative anti-capture-layer glass-dark text-slate-100";
                 themeToggleBtn.className = "absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-600/50 text-white flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-md";
                 
-                labelPhone.className = "block text-xs sm:text-sm font-extrabold text-slate-200 ml-1";
-                inputWrapper.className = "relative rounded-2xl flex items-center bg-slate-900 border border-slate-700 focus-within:border-blue-500 transition-all overflow-hidden shadow-inner";
+                labelPhone.className = "block text-xs sm:text-sm font-extrabold text-slate-200";
+                charCounter.className = "text-[11px] font-extrabold text-slate-400";
+                inputWrapper.className = "relative rounded-2xl flex items-center flex-1 bg-slate-900 border border-slate-700 focus-within:border-blue-500 transition-all overflow-hidden shadow-inner";
                 phonePrefix.className = "pl-3.5 pr-3 py-3.5 flex items-center gap-1.5 text-slate-200 text-xs sm:text-sm font-extrabold border-r border-slate-700 bg-slate-800/80 shrink-0";
-                phoneInput.className = "block w-full px-3.5 py-3.5 bg-transparent text-white text-xs sm:text-sm font-extrabold focus:outline-none placeholder:text-slate-500";
+                phoneInput.className = "block w-full px-3.5 py-3.5 bg-transparent text-white text-base sm:text-lg font-black tracking-widest focus:outline-none placeholder:text-slate-500 placeholder:text-xs placeholder:font-normal placeholder:tracking-normal";
+                inlineCopyBtn.className = "px-3.5 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-blue-400 font-extrabold rounded-2xl transition-all active:scale-95 flex items-center justify-center shrink-0 shadow-md cursor-pointer";
 
                 if(box1) box1.className = "bg-slate-900/90 p-3.5 rounded-2xl space-y-2 border border-slate-800 shadow-md";
                 if(titlePart1) titlePart1.className = "flex items-center gap-2 text-blue-400 font-extrabold text-xs";
@@ -392,8 +421,47 @@
         }
 
         // ==========================================
-        // 5. XỬ LÝ LOGIC TẠO LINK & QR CODE
+        // 5. XỬ LÝ NHẬP LIỆU & GIỚI HẠN 10 SỐ
         // ==========================================
+        function handlePhoneInput(input) {
+            // Lọc chỉ lấy ký tự số và giới hạn cứng tối đa 10 số
+            let cleaned = input.value.replace(/\D/g, '');
+            if (cleaned.length > 10) {
+                cleaned = cleaned.slice(0, 10);
+            }
+            input.value = cleaned;
+
+            // Cập nhật bộ đếm ký tự
+            document.getElementById('charCounter').innerText = `${cleaned.length}/10 số`;
+
+            // Hiện / ẩn nút xóa (dấu X đỏ)
+            const clearBtn = document.getElementById('clearInputBtn');
+            if (cleaned.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+        }
+
+        function clearPhoneInput() {
+            const input = document.getElementById('phoneInput');
+            input.value = '';
+            handlePhoneInput(input);
+            input.focus();
+        }
+
+        function copyInputPhone() {
+            const input = document.getElementById('phoneInput');
+            const val = input.value.trim();
+            if (!val) {
+                showModal("Chưa có số điện thoại để sao chép!");
+                return;
+            }
+            navigator.clipboard.writeText(val).then(() => {
+                showToast(`Đã sao chép: ${val}`);
+            });
+        }
+
         function processGenerator() {
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
             if (!isMobile) {
@@ -406,28 +474,19 @@
             const zaloUrlInput = document.getElementById('zaloUrl');
             const openZaloBtn = document.getElementById('openZaloBtn');
 
-            let rawValue = input.value.trim();
+            let cleanDigits = input.value.trim();
 
-            if (!rawValue) {
-                showModal("Vui lòng nhập số điện thoại trước khi tạo!");
+            if (cleanDigits.length !== 10) {
+                showModal(`Vui lòng nhập đúng đủ 10 chữ số (hiện tại có ${cleanDigits.length} số).`);
                 resultSection.classList.add('hidden');
                 return;
             }
 
-            let cleanDigits = rawValue.replace(/\D/g, '');
-
+            // Nếu người dùng lỡ nhập bắt đầu bằng số 84 hoặc khác, chuẩn hóa thành 0 đầu tiên nếu cần hoặc giữ nguyên 10 số di động Việt Nam chuẩn
             if (cleanDigits.startsWith('84')) {
                 cleanDigits = '0' + cleanDigits.slice(2);
             } else if (!cleanDigits.startsWith('0')) {
-                cleanDigits = '0' + cleanDigits;
-            }
-
-            const totalDigits = cleanDigits.length;
-
-            if (totalDigits !== 10) {
-                showModal(`Số điện thoại không hợp lệ! Hệ thống yêu cầu đúng 10 chữ số (hiện tại có ${totalDigits} số).`);
-                resultSection.classList.add('hidden');
-                return;
+                cleanDigits = '0' + cleanDigits.slice(1);
             }
 
             const zaloLink = `https://zalo.me/${cleanDigits}`;
@@ -452,24 +511,38 @@
             });
         }
 
+        function downloadQR() {
+            const qrCanvas = document.querySelector('#qrcode canvas');
+            const qrImg = document.querySelector('#qrcode img');
+
+            let imageURL = "";
+            if (qrCanvas) {
+                imageURL = qrCanvas.toDataURL("image/png");
+            } else if (qrImg) {
+                imageURL = qrImg.src;
+            }
+
+            if (imageURL) {
+                const link = document.createElement('a');
+                link.href = imageURL;
+                link.download = 'qr-zalo-baomat.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast("Đã tải mã QR về máy!");
+            } else {
+                showModal("Không tìm thấy dữ liệu mã QR để tải xuống!");
+            }
+        }
+
         function copyLink() {
             const zaloUrl = document.getElementById('zaloUrl');
             zaloUrl.select();
             navigator.clipboard.writeText(zaloUrl.value).then(() => {
                 const btnText = document.getElementById('copyBtnText');
                 btnText.innerText = "Đã chép!";
-                setTimeout(() => btnText.innerText = "Sao chép", 1500);
+                setTimeout(() => btnText.innerText = "Sao chép link", 1500);
             });
-        }
-
-        function downloadQR() {
-            const qrCanvas = document.querySelector('#qrcode canvas');
-            if (qrCanvas) {
-                const link = document.createElement('a');
-                link.href = qrCanvas.toDataURL("image/png");
-                link.download = 'qr-zalo-baomat.png';
-                link.click();
-            }
         }
 
         function showModal(message, title = "Thông Báo", isBlocking = false) {
