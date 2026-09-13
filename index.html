@@ -246,7 +246,15 @@
         }
 
         document.addEventListener('DOMContentLoaded', enforceMobileOnly);
-        window.addEventListener('resize', enforceMobileOnly);
+        
+        // Sử dụng Debounce tối ưu sự kiện resize để tránh đơ lag trên di động khi ẩn/hiện bàn phím ảo
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                enforceMobileOnly();
+            }, 250);
+        });
 
         // ==========================================
         // 2. KHÓA HOÀN TOÀN ZOOM & PHÍM TẮT CHỤP MÀN HÌNH
@@ -327,7 +335,7 @@
             const icon = document.getElementById('themeIcon');
 
             if (html.classList.contains('dark')) {
-                // Chuyển sang Light Mode (Nền sáng, chữ đậm đen sắc nét, chống loá)
+                // Chuyển sang Light Mode
                 html.classList.remove('dark');
                 container.className = "w-full max-w-sm sm:max-w-md rounded-3xl overflow-hidden relative anti-capture-layer glass-light text-slate-900 bg-white";
                 themeToggleBtn.className = "absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-xl bg-slate-200 hover:bg-slate-300 border border-slate-300 text-slate-800 flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-md";
