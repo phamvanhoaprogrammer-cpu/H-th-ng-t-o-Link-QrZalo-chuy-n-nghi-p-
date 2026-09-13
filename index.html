@@ -2,7 +2,7 @@
 <html lang="vi" class="dark">
 <head>
     <meta charset="UTF-8">
-    <!-- Khóa Zoom viewport triệt để trên mọi thiết bị di động -->
+    <!-- Khóa Zoom viewport trên thiết bị di động -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <title>Hệ Thống Tạo Mã QR & Link Zalo - Phạm Văn Hoà Programmer</title>
     <!-- Tailwind CSS CDN -->
@@ -28,11 +28,14 @@
             -webkit-font-smoothing: antialiased;
             touch-action: manipulation;
             -webkit-text-size-adjust: 100%;
-            overflow: hidden;
-            overscroll-behavior: none;
+            /* Tối ưu chống đơ lag và cho phép cuộn mượt mà trên di động */
+            overflow-y: auto;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overscroll-behavior-y: none;
         }
 
-        /* Chống chụp màn hình & Quay màn hình: Làm đen thui / Mờ tuyệt đối khi phát hiện */
+        /* Chống chụp màn hình / Mờ khi mất tiêu điểm */
         .anti-capture-layer {
             transition: filter 0.15s ease, opacity 0.15s ease;
             will-change: filter, opacity;
@@ -71,7 +74,7 @@
 <body class="min-h-screen flex items-center justify-center p-3 bg-slate-950 text-slate-100 transition-colors duration-200">
 
     <!-- Khung chính bảo mật -->
-    <div id="mainContainer" class="w-full max-w-sm sm:max-w-md rounded-3xl overflow-hidden relative anti-capture-layer glass-dark">
+    <div id="mainContainer" class="w-full max-w-sm sm:max-w-md my-auto rounded-3xl overflow-hidden relative anti-capture-layer glass-dark">
         
         <!-- Nút Đổi Giao Diện Sáng / Tối -->
         <button 
@@ -247,7 +250,7 @@
 
         document.addEventListener('DOMContentLoaded', enforceMobileOnly);
         
-        // Sử dụng Debounce tối ưu sự kiện resize để tránh đơ lag trên di động khi ẩn/hiện bàn phím ảo
+        // Dùng debounce tối ưu sự kiện resize tránh kẹt luồng render khi bàn phím ảo ẩn/hiện
         let resizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
@@ -312,7 +315,7 @@
         }
 
         // ==========================================
-        // 4. CHẾ ĐỘ SÁNG / TỐI (LIGHT / DARK MODE) TƯƠNG PHẢN CAO
+        // 4. CHẾ ĐỘ SÁNG / TỐI (LIGHT / DARK MODE)
         // ==========================================
         function toggleTheme() {
             const html = document.documentElement;
@@ -335,9 +338,9 @@
             const icon = document.getElementById('themeIcon');
 
             if (html.classList.contains('dark')) {
-                // Chuyển sang Light Mode
+                // Light Mode
                 html.classList.remove('dark');
-                container.className = "w-full max-w-sm sm:max-w-md rounded-3xl overflow-hidden relative anti-capture-layer glass-light text-slate-900 bg-white";
+                container.className = "w-full max-w-sm sm:max-w-md my-auto rounded-3xl overflow-hidden relative anti-capture-layer glass-light text-slate-900 bg-white";
                 themeToggleBtn.className = "absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-xl bg-slate-200 hover:bg-slate-300 border border-slate-300 text-slate-800 flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-md";
                 
                 labelPhone.className = "block text-xs sm:text-sm font-extrabold text-slate-900 ml-1";
@@ -360,9 +363,9 @@
 
                 icon.setAttribute('data-lucide', 'moon');
             } else {
-                // Chuyển sang Dark Mode
+                // Dark Mode
                 html.classList.add('dark');
-                container.className = "w-full max-w-sm sm:max-w-md rounded-3xl overflow-hidden relative anti-capture-layer glass-dark text-slate-100";
+                container.className = "w-full max-w-sm sm:max-w-md my-auto rounded-3xl overflow-hidden relative anti-capture-layer glass-dark text-slate-100";
                 themeToggleBtn.className = "absolute top-3.5 right-3.5 z-20 w-9 h-9 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-600/50 text-white flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-md";
                 
                 labelPhone.className = "block text-xs sm:text-sm font-extrabold text-slate-200 ml-1";
