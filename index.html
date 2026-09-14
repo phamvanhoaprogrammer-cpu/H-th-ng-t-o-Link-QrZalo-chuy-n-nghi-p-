@@ -31,19 +31,20 @@
 
         /* Hiệu ứng kính bóng cao cấp (Glassmorphism) */
         .glass-light {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.9);
             box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.12), inset 0 1px 2px rgba(255, 255, 255, 1);
         }
 
+        /* Đã chuyển khung nền tối thành màu đen tuyền sang trọng, không bị sáng xám */
         .glass-dark {
-            background: rgba(13, 18, 30, 0.85);
+            background: rgba(10, 14, 23, 0.95);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9), inset 0 1px 1px rgba(255, 255, 255, 0.08);
         }
 
         @keyframes modalPop {
@@ -55,7 +56,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-3 sm:p-4 bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+<body class="min-h-screen flex items-center justify-center p-3 sm:p-4 bg-slate-100 dark:bg-black text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
     <!-- Khung chính hiệu ứng kính bóng -->
     <div id="mainContainer" class="w-full max-w-sm sm:max-w-md my-auto rounded-3xl overflow-hidden relative glass-light dark:glass-dark transition-colors duration-300">
@@ -65,7 +66,7 @@
             type="button"
             onclick="toggleTheme()" 
             id="themeToggleBtn"
-            class="absolute top-3.5 right-3.5 z-30 w-10 h-10 rounded-2xl bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-amber-400 flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-lg backdrop-blur-md"
+            class="absolute top-3.5 right-3.5 z-30 w-10 h-10 rounded-2xl bg-white/90 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-amber-400 flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-lg backdrop-blur-md"
             title="Đổi giao diện Sáng/Tối"
         >
             <i id="themeIcon" data-lucide="sun" class="w-4 h-4"></i>
@@ -107,8 +108,8 @@
                 </div>
                 
                 <div class="flex gap-2 items-center">
-                    <div class="relative rounded-2xl flex items-center flex-1 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 focus-within:border-blue-600 dark:focus-within:border-blue-500 transition-all overflow-hidden shadow-inner backdrop-blur-sm">
-                        <div class="pl-3 pr-2.5 py-3 flex items-center gap-1 text-slate-800 dark:text-white text-xs font-extrabold border-r border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shrink-0">
+                    <div class="relative rounded-2xl flex items-center flex-1 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 focus-within:border-blue-600 dark:focus-within:border-blue-500 transition-all overflow-hidden shadow-inner backdrop-blur-sm">
+                        <div class="pl-3 pr-2.5 py-3 flex items-center gap-1 text-slate-800 dark:text-white text-xs font-extrabold border-r border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 shrink-0">
                             <span>🇻🇳 +84</span>
                         </div>
 
@@ -137,7 +138,7 @@
                     <button 
                         type="button"
                         onclick="copyInputPhone()"
-                        class="px-3.5 py-3 bg-white/90 dark:bg-slate-800/90 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-blue-600 dark:text-blue-400 font-extrabold rounded-2xl transition-all active:scale-95 flex items-center justify-center shrink-0 shadow-md cursor-pointer backdrop-blur-sm"
+                        class="px-3.5 py-3 bg-white/90 dark:bg-slate-900/90 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-blue-600 dark:text-blue-400 font-extrabold rounded-2xl transition-all active:scale-95 flex items-center justify-center shrink-0 shadow-md cursor-pointer backdrop-blur-sm"
                         title="Sao chép số điện thoại"
                     >
                         <i data-lucide="copy" class="w-4 h-4"></i>
@@ -156,7 +157,7 @@
             </button>
 
             <!-- Khung Loading (0-100%) -->
-            <div id="loadingSection" class="hidden bg-white/90 dark:bg-slate-900/90 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center space-y-3 backdrop-blur-md shadow-sm">
+            <div id="loadingSection" class="hidden bg-white/90 dark:bg-slate-900/90 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-center space-y-3 backdrop-blur-md shadow-sm">
                 <div class="flex items-center justify-between text-xs font-extrabold text-slate-800 dark:text-white">
                     <span class="flex items-center gap-2">
                         <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-blue-600 dark:text-blue-400"></i>
@@ -164,7 +165,7 @@
                     </span>
                     <span id="loadingPercent" class="text-blue-600 dark:text-blue-400 font-black">0%</span>
                 </div>
-                <div class="w-full h-2 bg-slate-200 dark:bg-slate-950 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700">
+                <div class="w-full h-2 bg-slate-200 dark:bg-slate-950 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800">
                     <div id="loadingBar" class="h-full bg-gradient-to-r from-blue-600 to-indigo-600 w-0 transition-all duration-75"></div>
                 </div>
             </div>
@@ -173,7 +174,7 @@
             <div id="resultSection" class="space-y-3 hidden pt-1">
                 
                 <!-- Phần 1: Link -->
-                <div class="bg-white/90 dark:bg-slate-900/90 p-3.5 rounded-2xl space-y-2 border border-slate-200 dark:border-slate-700 shadow-sm backdrop-blur-md">
+                <div class="bg-white/90 dark:bg-slate-900/90 p-3.5 rounded-2xl space-y-2 border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-md">
                     <div class="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-extrabold text-xs">
                         <i data-lucide="link" class="w-3.5 h-3.5"></i>
                         <span>Phần 1: Đường Link Zalo</span>
@@ -183,7 +184,7 @@
                         type="text" 
                         id="zaloUrl" 
                         readonly 
-                        class="block w-full px-3 py-2.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white text-xs font-mono font-bold focus:outline-none"
+                        class="block w-full px-3 py-2.5 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white text-xs font-mono font-bold focus:outline-none"
                     />
 
                     <div class="grid grid-cols-2 gap-2">
@@ -210,7 +211,7 @@
                 </div>
 
                 <!-- Phần 2: QR -->
-                <div class="bg-white/90 dark:bg-slate-900/90 p-3.5 rounded-2xl space-y-2.5 flex flex-col items-center border border-slate-200 dark:border-slate-700 shadow-sm backdrop-blur-md">
+                <div class="bg-white/90 dark:bg-slate-900/90 p-3.5 rounded-2xl space-y-2.5 flex flex-col items-center border border-slate-200 dark:border-slate-800 shadow-sm backdrop-blur-md">
                     <div class="w-full flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 font-extrabold text-xs">
                         <i data-lucide="qr-code" class="w-3.5 h-3.5"></i>
                         <span>Phần 2: Mã QR Zalo</span>
@@ -232,7 +233,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="bg-white/50 dark:bg-slate-950/50 border-t border-slate-200 dark:border-slate-800 p-2.5 text-center backdrop-blur-md">
+        <div class="bg-white/50 dark:bg-slate-950/80 border-t border-slate-200 dark:border-slate-800 p-2.5 text-center backdrop-blur-md">
             <p class="text-[10px] sm:text-[11px] font-extrabold text-slate-600 dark:text-slate-300">
                 Phát triển bởi: <span class="text-blue-600 dark:text-blue-400">Phạm Văn Hoà Programmer 🇻🇳</span>
             </p>
